@@ -24,5 +24,9 @@
   "commands.listroles.status.disabled.hover": "§aClick switch to Enabled\n%s",
 
   "announcement.modifier": "Modifier(s): ",
-  "announcement.no_modifiers": "No Modifiers"
+  "announcement.no_modifiers": "No Modifiers",
+
+  "harpymodloader.hud.actionbar": "Role: %s | Modifiers: %s",
+  "harpymodloader.hud.role_only": "Role: %s",
+  "harpymodloader.hud.no_modifiers": "None"
 }

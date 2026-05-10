@@ -70,6 +70,8 @@ public class ModdedMurderGameMode extends MurderGameMode {
 
         assignKillerReplacingRoles(roleCount,serverWorld,gameWorldComponent,players);
 
+        ensureCivilianWithProbability(serverWorld,gameWorldComponent,players);
+
         int modifierRoleCount = roleCount * HarpyModLoaderConfig.HANDLER.instance().modifierMultiplier;
         assignModifiers(modifierRoleCount, serverWorld,gameWorldComponent,players);
 
@@ -264,6 +266,40 @@ public class ModdedMurderGameMode extends MurderGameMode {
                 Role role2 = gameWorldComponent.getRole(player);
                 return !Harpymodloader.OVERWRITE_ROLES.contains(role2);
             });
+        }
+    }
+
+    public void ensureCivilianWithProbability(ServerWorld serverWorld, GameWorldComponent gameWorldComponent, List<ServerPlayerEntity> players) {
+        // 检查是否已有平民
+        boolean hasCivilian = false;
+        for (ServerPlayerEntity player : players) {
+            if (gameWorldComponent.isRole(player, WatheRoles.CIVILIAN)) {
+                hasCivilian = true;
+                break;
+            }
+        }
+
+        // 如果没有平民，75%概率强制出现一个平民
+        if (!hasCivilian && serverWorld.getRandom().nextFloat() < 0.75f) {
+            // 获取所有平民阵营的玩家，但排除义警和更好的义警
+            ArrayList<ServerPlayerEntity> innocentPlayers = new ArrayList<>();
+            for (ServerPlayerEntity player : players) {
+                Role role = gameWorldComponent.getRole(player);
+                if (role != null && role.isInnocent() && !role.canUseKiller()) {
+                    // 排除义警和更好的义警
+                    if (!gameWorldComponent.isRole(player, WatheRoles.VIGILANTE) && 
+                        !role.identifier().toString().contains("better_vigilante")) {
+                        innocentPlayers.add(player);
+                    }
+                }
+            }
+
+            // 如果有平民阵营玩家，随机选择一个改为平民
+            if (!innocentPlayers.isEmpty()) {
+                ServerPlayerEntity selectedPlayer = innocentPlayers.get(serverWorld.getRandom().nextInt(innocentPlayers.size()));
+                gameWorldComponent.addRole(selectedPlayer, WatheRoles.CIVILIAN);
+                Log.info(LogCategory.GENERAL, "强制生成平民: " + selectedPlayer.getNameForScoreboard());
+            }
         }
     }
 

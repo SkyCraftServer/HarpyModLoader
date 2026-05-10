@@ -24,5 +24,9 @@
   "commands.listroles.status.disabled.hover": "§a点击切换至启用状态\n%s",
 
   "announcement.modifier": "附加词条 ",
-  "announcement.no_modifiers": "没有附加词条"
+  "announcement.no_modifiers": "没有附加词条",
+
+  "harpymodloader.hud.actionbar": "身份：%s | 附加词条：%s",
+  "harpymodloader.hud.role_only": "身份：%s",
+  "harpymodloader.hud.no_modifiers": "无"
 }
